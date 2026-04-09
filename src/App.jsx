@@ -1,4 +1,10 @@
+import { useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
 export default function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const menus = ['About', 'Business', 'Why MONOCO', 'Contact'];
 
   const businessCards = [
@@ -80,7 +86,53 @@ export default function App() {
               </a>
             ))}
           </nav>
+
+          {/* Mobile Menu Button */}
+          <button 
+            className="flex items-center justify-center p-2 text-white/80 lg:hidden"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
+          </button>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="absolute left-0 right-0 top-full border-b border-white/10 bg-[#050809]/95 px-6 py-8 backdrop-blur-xl lg:hidden"
+            >
+              <nav className="flex flex-col gap-6">
+                {menus.map((menu, index) => (
+                  <motion.a
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    href={['#about', '#business', '#why-monoco', '#contact'][index]}
+                    className="text-xl font-medium text-white/90 hover:text-[#d2ae80]"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {menu}
+                  </motion.a>
+                ))}
+                <div className="mt-4 pt-6 border-t border-white/5">
+                  <a 
+                    href="#contact" 
+                    className="inline-flex w-full items-center justify-center rounded-md bg-[#b89363] py-4 text-base font-bold text-black"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    상담문의
+                  </a>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <main>
